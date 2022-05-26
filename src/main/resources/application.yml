@@ -1,0 +1,15 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          cognito:
+            client-id: 6vrs3b89tcvl123u358aibgmbp
+            client-secret: 53ma19trchhkv19br4vtvldkg4v9eplid1h151e0kct70t11l5t
+            scope: openid
+            redirect-uri: https://agoraworld.co/cognito/cognito_callback.html
+            clientName: your_clientName
+        provider:
+          cognito:
+            issuerUri:  https://dev-agora.auth.eu-west-2.amazoncognito.com
+            user-name-attribute: cognito:username
