@@ -1,27 +1,24 @@
 package co.agoraworld.tests;
 
 import co.agoraworld.APIHandler;
-import co.agoraworld.Constants.v_0_1.AdminConstants;
-import co.agoraworld.tests.pages.LoginPage;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.jupiter.api.Test;
+
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
 
-import static com.codeborne.selenide.Selenide.open;
 import static io.restassured.RestAssured.given;
 
 public class BaseTest {
-    public static APIHandler apiHandler = new APIHandler();
-    private static final Logger LOG = LogManager.getLogger(BaseTest.class);
     static ClassSingleton classSingleton = ClassSingleton.getInstance();
     public static String token = classSingleton.getToken();
+
 
     public Response post(RequestSpecification specWithToken, Object body, URI url) {
         return RestAssured.given().spec(specWithToken).log().uri()
@@ -105,15 +102,74 @@ public class BaseTest {
                 .extract().response();
     }
 
-    public Response delete(RequestSpecification specification, String url) {
-        return RestAssured.given().spec(specification).log().uri()
+    public Response delete(String url) {
+        Response response = given()
                 .when()
+                .accept("application/json")
+                .header("Authorization", String.format("Bearer %s", token))
+                .header("CF-Access-Client-Id", "02d193502de091a550e115ab41ea6682.access")
+                .header("CF-Access-Client-Secret", "ad69cdaebc5ad6fbfb692c739577deb036721795a3b121c1044cb76310414df2")
+                .header("Content-Type", "application/json")
+                .delete(url)
+                .then()
+                .extract().response();
+        return response;
+    }
+
+    public Response getResponse(String url) {
+        Response response = given()
+                .when()
+                .accept("application/json")
+                .header("Authorization", String.format("Bearer %s", token))
+                .header("CF-Access-Client-Id", "02d193502de091a550e115ab41ea6682.access")
+                .header("CF-Access-Client-Secret", "ad69cdaebc5ad6fbfb692c739577deb036721795a3b121c1044cb76310414df2")
+                .get(url)
+                .then()
+                .extract().response();
+        return response;
+    }
+    public static Response postResponse(String url, String body) {
+        Response response = given()
+                .when()
+                .accept("application/json")
+                .header("Authorization", String.format("Bearer %s", token))
+                .header("CF-Access-Client-Id", "02d193502de091a550e115ab41ea6682.access")
+                .header("CF-Access-Client-Secret", "ad69cdaebc5ad6fbfb692c739577deb036721795a3b121c1044cb76310414df2")
+                .header("Content-Type", "application/json")
+                .body(body)
                 .filter(new AllureRestAssured())
                 .when()
                 .log().all()
-                .delete(url)
+                .post(url)
                 .then()
-                .log().all()
                 .extract().response();
+        return response;
+    }
+    public Response putResponse(String url){
+        Response response = given()
+                .when()
+                .accept("application/json")
+                .header("Authorization", String.format("Bearer %s", token))
+                .header("CF-Access-Client-Id", "02d193502de091a550e115ab41ea6682.access")
+                .header("CF-Access-Client-Secret", "ad69cdaebc5ad6fbfb692c739577deb036721795a3b121c1044cb76310414df2")
+                .header("Content-Type", "application/json")
+                .put(url)
+                .then()
+                .extract().response();
+        return response;
+    }
+    public Response putResponseWithBody(String url, String body){
+        Response response = given()
+                .when()
+                .accept("application/json")
+                .header("Authorization", String.format("Bearer %s", token))
+                .header("CF-Access-Client-Id", "02d193502de091a550e115ab41ea6682.access")
+                .header("CF-Access-Client-Secret", "ad69cdaebc5ad6fbfb692c739577deb036721795a3b121c1044cb76310414df2")
+                .header("Content-Type", "application/json")
+                .body(body)
+                .put(url)
+                .then()
+                .extract().response();
+        return response;
     }
 }

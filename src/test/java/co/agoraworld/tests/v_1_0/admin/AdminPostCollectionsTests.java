@@ -1,11 +1,10 @@
 package co.agoraworld.tests.v_1_0.admin;
 
 import co.agoraworld.tests.BaseTest;
-import co.agoraworld.tests.pages.LoginPage;
+
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 
-import static com.codeborne.selenide.Selenide.open;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

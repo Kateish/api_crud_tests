@@ -1,5 +1,6 @@
 package co.agoraworld.tests.pages;
 
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.FindBy;
@@ -18,6 +19,12 @@ public class LoginPage {
     private SelenideElement token;
 
     public LoginPage passLogin() {
+        signInUserName.setValue("kate-admin");
+        signInPassword.setValue("BraveNewW0rld+").sendKeys(Keys.ENTER);
+        return this;
+    }
+
+    public LoginPage passLoginAnotherUser() {
         signInUserName.setValue("kate-admin");
         signInPassword.setValue("BraveNewW0rld+").sendKeys(Keys.ENTER);
         return this;

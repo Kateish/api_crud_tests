@@ -1,6 +1,8 @@
 package co.agoraworld.tests;
 
 import co.agoraworld.tests.pages.LoginPage;
+import com.codeborne.selenide.Selenide;
+import org.junit.jupiter.api.AfterAll;
 
 import static com.codeborne.selenide.Selenide.open;
 
@@ -31,6 +33,10 @@ public final class ClassSingleton {
         }
 
         return INSTANCE;
+    }
+    @AfterAll
+    public void close(){
+        Selenide.closeWindow();
     }
 }
 

@@ -1,8 +1,16 @@
 package co.agoraworld.tests.v_1_0.admin;
 
 import co.agoraworld.tests.BaseTest;
+import io.qameta.allure.Description;
+import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
+
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -10,25 +18,44 @@ import static org.hamcrest.Matchers.is;
 
 public class AdminSettingsTests extends BaseTest {
 
+    @Description("Get all setting groups")
     @Test
-    public void getSettingsGroups(){
+    public void getSettingsGroupsTest(){
         Response response = collectionsGetResponse("https://dev.agoraworld.dev/api/admin/settings/groups");
         response.prettyPrint();
         getSettingsGroupsResponseIsOk(response);
     }
 
+    @Description("Get settings by group")
     @Test
-    public void getSettingsByGroup(){
+    public void getSettingsByGroupTest(){
         Response response = collectionsGetResponse("https://dev.agoraworld.dev/api/admin/settings/groups/CART");
         response.prettyPrint();
         checkSettingsPerAGroup(response);
     }
 
+    @Description("Get settings by key")
     @Test
-    public void getSettingsByKey(){
+    public void getSettingsByKeyTest(){
         Response response = collectionsGetResponse("https://dev.agoraworld.dev/api/admin/settings?key=MAX_QUANTITY_PER_CART_ITEM");
         response.prettyPrint();
         checkSettingsByKey(response);
+    }
+
+    @Description("Update settings")
+    @Test
+    public void changeSettingsTest(){
+        Map<String, Object> postCollection = new HashMap();
+        postCollection.put("\"value\"", "\"12\"");
+        postCollection.put("\"name\"", "\"Max quantity per cart item\"");
+        postCollection.put("\"description\"", "\"The maximum quantity allowed to set per offer in the cart new value\"");
+        System.out.println(postCollection.toString());
+        Response response = putWithBodyResponse("https://dev.agoraworld.dev/api/admin/settings?key=MAX_QUANTITY_PER_CART_ITEM", String.valueOf(postCollection));
+        response.prettyPrint();
+        checkSettingsByKey(response);
+    }
+    public void checkChangedSettings(Response response){
+
     }
     public void getSettingsGroupsResponseIsOk(Response response){
         String key = response.getBody().jsonPath().get("[0].key");
@@ -104,6 +131,34 @@ public class AdminSettingsTests extends BaseTest {
                 .header("CF-Access-Client-Id", "02d193502de091a550e115ab41ea6682.access")
                 .header("CF-Access-Client-Secret", "ad69cdaebc5ad6fbfb692c739577deb036721795a3b121c1044cb76310414df2")
                 .get(url)
+                .then()
+                .extract().response();
+        return response;
+    }
+
+    public Response putResponse(String url){
+        Response response = given()
+                .when()
+                .accept("application/json")
+                .header("Authorization", String.format("Bearer %s", token))
+                .header("CF-Access-Client-Id", "02d193502de091a550e115ab41ea6682.access")
+                .header("CF-Access-Client-Secret", "ad69cdaebc5ad6fbfb692c739577deb036721795a3b121c1044cb76310414df2")
+                .header("Content-Type", "application/json")
+                .put(url)
+                .then()
+                .extract().response();
+        return response;
+    }
+    public Response putWithBodyResponse(String url, String body){
+        Response response = given()
+                .when()
+                .accept("application/json")
+                .header("Authorization", String.format("Bearer %s", token))
+                .header("CF-Access-Client-Id", "02d193502de091a550e115ab41ea6682.access")
+                .header("CF-Access-Client-Secret", "ad69cdaebc5ad6fbfb692c739577deb036721795a3b121c1044cb76310414df2")
+                .header("Content-Type", "application/json")
+                .body(body)
+                .put(url)
                 .then()
                 .extract().response();
         return response;
